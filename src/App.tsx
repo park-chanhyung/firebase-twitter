@@ -4,10 +4,11 @@ import Home from "./routes/home";
 import Profile from "./routes/profile";
 import Login from "./routes/login";
 import CreateAccount from "./routes/create-account";
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle, styled } from "styled-components";
 import reset from "styled-reset";
 import { useEffect, useState } from "react";
 import LoadingScreen from "./components/loading-screen";
+import { auth } from "./firebase";
 
 //라우터 설정 
 const router = createBrowserRouter([
@@ -48,21 +49,34 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
+const Wrapper = styled.div`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+`;
+
 function App() {
   const[isLoading,setLoading] = useState(true);
   const init = async() => {
-    // 파이어베이스 로딩 코드 
+    // firebase를 통해서 로그인 여부 확인  
+    //authStateReady  : 인증상태가 준비되었는지 기다림  -> 쿠키와 토큰을 읽고 백엔드와 소통해서 로그인여부를 확인하는 동안 기다림 
+    await auth.authStateReady();
+    // 파이어베이스 로딩 코드   true면 loading  false면 router
     setLoading(false);
   };
+
+  // useEffect 사용해서 초기화 
   useEffect(()=>{
     init();
   },[]);
 
   return (
-    <>
-      <GlobalStyles />
+        <Wrapper>     
+          <GlobalStyles />
+        {/* isLoading 상태에 따라 로딩 스크린 또는 라우터를 렌더링 */}
       {isLoading ? <LoadingScreen/> : <RouterProvider router={router}/>}
-    </>
+        </Wrapper>
+
   );
 }
 
