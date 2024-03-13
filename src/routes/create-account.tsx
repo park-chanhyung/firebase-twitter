@@ -1,49 +1,17 @@
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
-import styled from "styled-components";
 import { auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
 
-//CSS 
-const Wrapper = styled.div`
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 420px;
-  padding: 50px 0px;
-`;
-
-const Title = styled.h1`
-  font-size: 42px;
-`;
-
-const Form = styled.form`
-  margin-top: 50px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-`;
-
-const Input = styled.input`
-  padding: 10px 20px;
-  border-radius: 50px;
-  border: none;
-  width: 100%;
-  font-size: 16px;
-  &[type="submit"] {
-    cursor: pointer;
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-`;
-
-const Error = styled.span`
-  font-weight: 600;
-  color: tomato;
-`;
+import { Link, useNavigate } from "react-router-dom";
+import { FirebaseError } from "firebase/app";
+import {
+  Form,
+  Error,
+  Input,
+  Switcher,
+  Title,
+  Wrapper,
+} from "../components/auth-components";
 
 export default function CreateAccount() {
     // 계정 생성을 시작할때 loading을 true로 바꿈  초기값 false
@@ -72,6 +40,7 @@ export default function CreateAccount() {
 //
 const onSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
     //isLoading 이 참일때 name,email.password가 비어있으면 리턴   
     if(isLoading || name ===""|| email===""||password==="") return;
     try {
@@ -84,14 +53,20 @@ const onSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
       // 로그인하면 자격받고 로그인 
     setLoading(true);
     const credentials = await createUserWithEmailAndPassword(auth,email,password);
+    console.log(credentials.user);
+
+    //사용자의 이름 설정 (방금 회원가입한 유저의 프로필업데이트)
     await updateProfile(credentials.user,{
         displayName: name,
     });
+    //로그인하면 홈으로 
         navigate("/");
     } 
     catch (e) {
     // 이미 존재하는 계정이거나 패스워드가 유효하지않으면 실패
-
+        if(e instanceof FirebaseError){
+            setError(e.message);
+        }
     } finally {
         setLoading(false);
     }
@@ -134,6 +109,9 @@ return (
         />
         </Form>
         {error !== "" ? <Error>{error}</Error> : null}
+        <Switcher>
+        Already have an account? <Link to="/login">Log in &rarr;</Link>
+      </Switcher>
     </Wrapper>
     );
 }
