@@ -40,6 +40,7 @@ export default function CreateAccount() {
 //
 const onSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // 에러메세지 초기화 
     setError("");
     //isLoading 이 참일때 name,email.password가 비어있으면 리턴   
     if(isLoading || name ===""|| email===""||password==="") return;
@@ -71,6 +72,7 @@ const onSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
         setLoading(false);
     }
 };
+
 return (
     <Wrapper>
     <Title>Silgobi Join 𝕏</Title>
@@ -110,7 +112,7 @@ return (
         </Form>
         {error !== "" ? <Error>{error}</Error> : null}
         <Switcher>
-        Already have an account? <Link to="/login">Log in &rarr;</Link>
+        Already have an account? <Link to="/login">로그인 &rarr;</Link>
       </Switcher>
     </Wrapper>
     );

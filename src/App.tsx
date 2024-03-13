@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import LoadingScreen from "./components/loading-screen";
 import { auth } from "./firebase";
 import ProtectedRoute from "./components/protected-route";
+import PhoneLogin from "./routes/phonelogin";
 
 //라우터 설정 
 const router = createBrowserRouter([
@@ -27,15 +28,19 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: 
-        <ProtectedRoute>
+        // <ProtectedRoute>
         <Profile />
-        </ProtectedRoute>,
+        // </ProtectedRoute>,
       },
     ],
   },
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/phonelogin",
+    element: <PhoneLogin />,
   },
   {
     path: "/create-account",

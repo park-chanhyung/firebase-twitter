@@ -31,16 +31,22 @@ export default function CreateAccount() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+
     if (isLoading || email === "" || password === "") return;
+
     try {
+      //로그인 성공시 
       setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
+      console.log(auth.currentUser);
       navigate("/");
-    } catch (e) {
+    } 
+    catch (e) {
       if (e instanceof FirebaseError) {
         setError(e.message);
       }
-    } finally {
+    } 
+    finally {
       setLoading(false);
     }
   };
@@ -69,7 +75,7 @@ export default function CreateAccount() {
       {error !== "" ? <Error>{error}</Error> : null}
       <Switcher>
         Don't have an account?{" "}
-        <Link to="/create-account">Create one &rarr;</Link>
+        <Link to="/create-account">회원가입 &rarr;</Link>
       </Switcher>
     </Wrapper>
   );
